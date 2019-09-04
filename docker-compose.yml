@@ -1,0 +1,33 @@
+version: "3.7"
+services:
+  dns:
+    image: aanousakis/no-ip
+    environment:
+      USERNAME_FILE: /run/secrets/username
+      PASSWORD_FILE: /run/secrets/password
+      DOMAINS_FILE:  /run/secrets/domains
+      INTERVAL_FILE: /run/secrets/interval
+    secrets:
+      - username
+      - password
+      - domains
+      - interval
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+
+secrets:
+ username:
+   external: true
+ password:
+   external: true
+ domains:
+   external: true 
+ interval:
+   external: true
+

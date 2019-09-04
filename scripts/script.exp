@@ -1,0 +1,137 @@
+#!/usr/bin/expect -f
+
+
+set force_conservative 1  ;# set to 1 to force conservative mode even if
+			  ;# script wasn't run conservatively originally
+if {$force_conservative} {
+	set send_slow {1 .1}
+	proc send {ignore arg} {
+		sleep .1
+		exp_send -s -- $arg
+	}
+}
+
+set username [exec cat /run/secrets/username]
+set password [exec cat /run/secrets/password]
+set interval [exec cat /run/secrets/interval]
+
+#seperate domains based on spaces and put it in a list
+set tmp [exec cat /run/secrets/domains]
+set domains  [split $tmp]
+
+#set scripts_dir ~/docker-workspace/no-ip/scripts
+set scripts_dir /scripts
+
+set hosts -1
+
+exp_internal 1
+set timeout -1
+spawn noip2 -C
+match_max 100000
+
+set choice -1
+
+# TODO create variable
+# find which adapter is used to access the internet
+set default_adapter [exec $scripts_dir/get_adapter_name.sh]
+
+# TODO create variable
+# find how many adapters are available
+set adapters_cnt [exec $scripts_dir/get_adapter_number.sh]
+puts "Found $adapters_cnt adapters"
+
+#select network adapter
+if { $adapters_cnt > 1} {
+  puts "Network adapter selection"
+
+# When all adapters are parsed the input buffer will be empy and a timeout will occur, which will # end the while loop
+  while { 1 } {
+
+# read adapter's number
+    expect {
+      -re {\t} {}
+       timeout  { break }
+    }
+    set id $expect_out(buffer)
+    # remove \r\n from the end
+    set id [ exec echo $id | tr -d '\r\n']
+    puts "id : $id"
+
+    expect {
+      -re {\r\n} {}
+    }
+    set adapter $expect_out(buffer)
+# remove \r\n from the end
+    set adapter [ exec echo $adapter | tr -d '\r\n']
+    puts "adapter name : $adapter"
+
+    if {$adapter == $default_adapter} {
+      set choice $id
+      break
+    }
+  }
+
+  if {$choice > -1} {
+      puts "Selecting # $choice"
+      send -- "$choice\r"
+  }
+}
+
+expect -exact "Please enter the login/email string for no-ip.com  " {puts "matched 1"; send -- "$username\r"}
+
+
+expect -exact "$username\r\nPlease enter the password for user '$username'  "   {send -- "$password\r" }
+
+#reads how many no-ip domains aravailable to be updated
+expect {
+    -re {[0-9]+} { set hosts $expect_out(0,string); puts "hosts found : $hosts"}
+  }
+
+
+expect -exact "Do you wish to have them all updated?\[N\] (y/N)  " {   set choice "n"; send -- $choice}
+
+# for each available domain checks if it should be enabled for updates
+while { $hosts > 0 } {
+
+  expect -exact "$choice\r\nDo you wish to have host \["
+
+# extract domain
+  expect {
+    -re {([a-zA-Z0-9]*\.)*[a-zA-Z0-9]*} { set check_domain $expect_out(0,string); puts "$check_domain"}
+  }
+
+  expect -exact "\] updated?\[N\] (y/N)  "
+
+#checks if the check_domain is in the list with the domains that should be update
+  set choice "n"
+  foreach domain $domains {
+
+    puts "\[$domain\]"
+    puts "\[$check_domain\]"
+
+    if {$domain == $check_domain} {
+      set choice "y"
+      break
+    }
+  }
+  send -- "$choice"
+
+  set hosts [expr $hosts - 1]
+}
+
+expect -exact "$choice\r\nPlease enter an update interval:\[30\]  " { send -- "$interval\r" }
+
+expect -exact "\r\nDo you wish to run something at successful update?\[N\] (y/N)  "
+send -- "n"
+expect eof
+
+
+
+
+
+
+
+
+
+
+
