@@ -2,6 +2,8 @@
 
 #docker swarm init
 
+./build.sh
+
 echo "Closing no-ip_dns service if it running"
 docker service inspect no-ip_dns > /dev/null
 if [ $? -eq 0 ]; then
