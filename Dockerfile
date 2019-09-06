@@ -24,7 +24,7 @@ COPY --from=builder /src/noip_src/noip2 /usr/local/bin
 COPY scripts/* /scripts/
 
 
-ENTRYPOINT ["/scripts/start_commands.sh &"]
+ENTRYPOINT ["/scripts/start_commands.sh"]
 
 
 
