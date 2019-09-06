@@ -54,7 +54,23 @@ echo "No-ip client started successfully"
 # The container exits with an erro if it detects that the processes has exited.
 # Otherwise it loops forever, waking up every 60 seconds
 
-while sleep 60; do
+while sleep 10; do
+
+  domain_ip=`ping -c 3 aanousakis.ddns.net | grep -o "([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*)" | head -n 1 | grep -o "[^()]*"`
+  printf "Domain has ip : $domain_ip\n"
+
+
+  my_ip=`STUNExternalIP | egrep 'Public IP' |  cut -d' ' -f4- | head -n 1`
+  printf "My ip : $my_ip\n"
+
+  if [ $domain_ip == $my_ip ]; then
+    echo "Strings are equal"
+  else
+    echo "Strings are not equal"
+  fi
+
+
+
   ps aux |grep noip2 |grep -q -v grep
   PROCESS_2_STATUS=$?
   # If the greps above find anything, they exit with 0 status
