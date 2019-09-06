@@ -25,17 +25,9 @@ else
   INTERVAL="$(cat $INTERVAL_FILE)"
 fi
 
-printf "USERNAME [$USERNAME]\n"
-printf "PASSWORD [$PASSWORD]\n"
-printf "DOMAINS  [$DOMAINS]\n"
-printf "INTERVAL [$INTERVAL]\n"
-
-
 # Start the first process
 # generate config file
 echo "Starting process to generate config file"
-
-env
 
 ./script.exp "$USERNAME" "$PASSWORD" "$DOMAINS" "$INTERVAL"
 status=$?

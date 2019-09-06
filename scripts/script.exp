@@ -30,7 +30,7 @@ set scripts_dir /scripts
 
 set hosts -1
 
-exp_internal 1
+#exp_internal 1
 set timeout -1
 spawn noip2 -C
 match_max 100000
@@ -112,8 +112,8 @@ while { $hosts > 0 } {
   set choice "n"
   foreach domain $domains {
 
-    puts "\[$domain\]"
-    puts "\[$check_domain\]"
+    #puts "\[$domain\]"
+    #puts "\[$check_domain\]"
 
     if {$domain == $check_domain} {
       set choice "y"
