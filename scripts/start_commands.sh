@@ -3,7 +3,9 @@
 # based on https://docs.docker.com/config/containers/multi-service_container/
 
 
-echo "testing secrets"
+./check_variable.sh
+
+echo "reading secrets"
 
 printf "secret USERNAME ["
 cat /run/secrets/username
