@@ -25,7 +25,7 @@ if [ $? -eq 0 ]; then
 fi
 printf "Enter password:"
 read input
-printf "aan0usakis" | docker secret create password -
+printf "$input" | docker secret create password -
 
 
 docker secret inspect domains > /dev/null
