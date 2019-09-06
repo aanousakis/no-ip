@@ -2,28 +2,8 @@
 
 # based on https://docs.docker.com/config/containers/multi-service_container/
 
-
+printf "v1 calling check_variables.sh\n"
 ./check_variable.sh
-
-echo "reading secrets"
-
-printf "secret USERNAME ["
-cat /run/secrets/username
-printf "]\n"
-
-printf "secret PASSWORD ["
-cat /run/secrets/password
-printf "]\n"
-
-printf "secret DOMAINS ["
-cat /run/secrets/domains
-printf "]\n"
-
-printf "secret INTERVAL ["
-cat /run/secrets/interval
-printf "]\n"
-
-
 
 # Start the first process
 # generate config file
