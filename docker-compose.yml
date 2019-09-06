@@ -1,7 +1,7 @@
 version: "3.7"
 services:
-  dns:
-    image: aanousakis/no-ip
+  service:
+    image: aanousakis/no-ip:latest
     environment:
       USERNAME_FILE: /run/secrets/username
       PASSWORD_FILE: /run/secrets/password
