@@ -48,5 +48,4 @@ docker build --tag=aanousakis/no-ip .
 ```
 ## Author
 
-* **Antony Anousakis** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
+* **Antony Anousakis**
