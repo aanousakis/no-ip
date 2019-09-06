@@ -11,13 +11,19 @@ if {$force_conservative} {
 	}
 }
 
-set username [exec cat /run/secrets/username]
-set password [exec cat /run/secrets/password]
-set interval [exec cat /run/secrets/interval]
+set username [lindex $argv 0]
+set password [lindex $argv 1]
+set interval [lindex $argv 3]
 
 #seperate domains based on spaces and put it in a list
-set tmp [exec cat /run/secrets/domains]
+set tmp [lindex $argv 2]
 set domains  [split $tmp]
+
+puts "username $username"
+puts "password $password"
+puts "domains $domains"
+puts "interval $interval"
+
 
 #set scripts_dir ~/docker-workspace/no-ip/scripts
 set scripts_dir /scripts

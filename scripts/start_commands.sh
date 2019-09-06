@@ -2,14 +2,42 @@
 
 # based on https://docs.docker.com/config/containers/multi-service_container/
 
-printf "v1 calling check_variables.sh\n"
-./check_variable.sh
+printf "Check and import env variables\n"
+
+printf "Checking filename env variables\n"
+if [ -z "$USERNAME_FILE" ] && [ -z "$PASSWORD_FILE" ] && [ -z "$DOMAINS_FILE" ] && [ -z "$INTERVAL_FILE" ]; then
+  printf "Secret filenames doesn't exist\n"
+
+  printf "Checking if env variables exist\n"
+  if [ -z "$USERNAME" ] && [ -z "$PASSWORD" ] && [ -z "$DOMAINS" ] && [ -z "$INTERVAL" ]; then
+    printf "env variables doen't exist\n"
+    exit 1
+  else
+    printf "env variables exist\n"
+    
+  fi
+else
+  printf "Secret filenames exist\n"
+
+  USERNAME="$(cat $USERNAME_FILE)"
+  PASSWORD="$(cat $PASSWORD_FILE)"
+  DOMAINS="$(cat $DOMAINS_FILE)"
+  INTERVAL="$(cat $INTERVAL_FILE)"
+fi
+
+printf "USERNAME [$USERNAME]\n"
+printf "PASSWORD [$PASSWORD]\n"
+printf "DOMAINS  [$DOMAINS]\n"
+printf "INTERVAL [$INTERVAL]\n"
+
 
 # Start the first process
 # generate config file
 echo "Starting process to generate config file"
 
-./script.exp
+env
+
+./script.exp "$USERNAME" "$PASSWORD" "$DOMAINS" "$INTERVAL"
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start noip2 -C : $status"
