@@ -19,10 +19,10 @@ if [ -z "$USERNAME_FILE" ] && [ -z "$PASSWORD_FILE" ] && [ -z "$DOMAINS_FILE" ] 
 else
   printf "Secret filenames exist\n"
 
-  USERNAME="$(cat $USERNAME_FILE)"
-  PASSWORD="$(cat $PASSWORD_FILE)"
-  DOMAINS="$(cat $DOMAINS_FILE)"
-  INTERVAL="$(cat $INTERVAL_FILE)"
+  export USERNAME="$(cat $USERNAME_FILE)"
+  export PASSWORD="$(cat $PASSWORD_FILE)"
+  export DOMAINS="$(cat $DOMAINS_FILE)"
+  export INTERVAL="$(cat $INTERVAL_FILE)"
 fi
 
 # Start the first process

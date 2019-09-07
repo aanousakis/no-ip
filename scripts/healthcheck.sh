@@ -1,7 +1,6 @@
 #!/bin/sh
 
-#while sleep $(( $INTERVAL*60 )); do
-while sleep $(( 2  + 0 )); do
+while sleep $(( $INTERVAL*0.1 )); do
 
   if [[ "$(ping -c 1 8.8.8.8 | grep '0% packet loss' )" != "" ]]; then
       #echo "Internet is present"
@@ -15,7 +14,7 @@ while sleep $(( 2  + 0 )); do
       fi
 
      var=`echo "$DOMAINS" | sed "s/ \+/;/g"     
-     printf "$var\n" `
+     printf "var =$var\n" `
      while [ "$var" ] ;do
      iter=${var%%;*}
      [ "$var" = "$iter" ] && \

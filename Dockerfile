@@ -1,4 +1,4 @@
-FROM n0madic/alpine-gcc:9.1.0 AS builder
+FROM alpine AS builder
 
 WORKDIR /src
 
