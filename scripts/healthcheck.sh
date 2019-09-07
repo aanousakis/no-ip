@@ -1,6 +1,6 @@
 #!/bin/sh
 
-while sleep $(( $INTERVAL*0.1 )); do
+while sleep 3600; do
 
   if [[ "$(ping -c 1 8.8.8.8 | grep '0% packet loss' )" != "" ]]; then
       #echo "Internet is present"
@@ -13,8 +13,7 @@ while sleep $(( $INTERVAL*0.1 )); do
         exit 1
       fi
 
-     var=`echo "$DOMAINS" | sed "s/ \+/;/g"     
-     printf "var =$var\n" `
+     var=`echo "$DOMAINS" | sed "s/ \+/;/g"` 
      while [ "$var" ] ;do
      iter=${var%%;*}
      [ "$var" = "$iter" ] && \
@@ -26,6 +25,8 @@ while sleep $(( $INTERVAL*0.1 )); do
 
         if [ $domain_ip !=  $my_ip ]; then
           echo "IP addresses not match."
+
+          sleep $(( $INTERVAL * 120 ))
           exit 1
         fi
      done
