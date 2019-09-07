@@ -56,21 +56,15 @@ echo "Starting Healthcheck monitoring"
 ./healthcheck.sh
 status=$?
 if [ $status -ne 0 ]; then
-  echo "Failed to start healthcheck: $status"
+  echo "Healthcheck monitoring exited.: $status"
   exit $status
 fi
-echo "Healthcheck monitoring started successfully"
-
-
-
 
 # Naive check runs checks once a minute to see if the second processes exited.
 # The container exits with an erro if it detects that the processes has exited.
 # Otherwise it loops forever, waking up every 60 seconds
 
 while sleep 10; do
-
-
 
   ps aux |grep noip2 |grep -q -v grep
   PROCESS_2_STATUS=$?
