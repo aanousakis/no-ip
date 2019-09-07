@@ -14,7 +14,8 @@ while sleep $(( 2  + 0 )); do
         exit 1
       fi
 
-     var=`echo "$DOMAINS" | sed "s/ \+/;/g"      `
+     var=`echo "$DOMAINS" | sed "s/ \+/;/g"     
+     printf "$var\n" `
      while [ "$var" ] ;do
      iter=${var%%;*}
      [ "$var" = "$iter" ] && \
