@@ -46,4 +46,4 @@ read input
 printf "$input" | docker secret create interval -
 
 
-docker stack deploy -c docker-compose.yml no-ip
+docker stack deploy --resolve-image never -c docker-compose.yml no-ip
