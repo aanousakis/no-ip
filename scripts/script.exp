@@ -103,7 +103,7 @@ while { $hosts > 0 } {
 
 # extract domain
   expect {
-    -re {([a-zA-Z0-9]*\.)*[a-zA-Z0-9]*} { set check_domain $expect_out(0,string); puts "$check_domain"}
+    -re {([a-zA-Z0-9\-]*\.)*[a-zA-Z0-9]*} { set check_domain $expect_out(0,string); puts "$check_domain"}
   }
 
   expect -exact "\] updated?\[N\] (y/N)  "
