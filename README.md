@@ -1,4 +1,5 @@
 ![Docker Pulls](https://img.shields.io/docker/pulls/aanousakis/no-ip?style=plastic)
+![Docker Image Size (tag)](https://img.shields.io/docker/image-size/aanousakis/no-ip/latest)
 
 # NO-IP Dynamic DNS Update Client
 
