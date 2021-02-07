@@ -139,7 +139,7 @@ set adapters_cnt [exec $scripts_dir/get_adapter_number.sh]
 puts "Found $adapters_cnt adapters"
 
 set timeout 10
-spawn ./noip2 -C  -c xxx
+spawn noip2 -C
 match_max 100000
 
 
