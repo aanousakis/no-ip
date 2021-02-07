@@ -1,3 +1,5 @@
+![Docker Pulls](https://img.shields.io/docker/pulls/aanousakis/no-ip?style=plastic)
+
 # NO-IP Dynamic DNS Update Client
 
 A simple [Docker container](https://hub.docker.com/r/aanousakis/no-ip) for running the NO-IP dynamic DNS update. It will keep current IP address in sync with your No-IP host or domain.
