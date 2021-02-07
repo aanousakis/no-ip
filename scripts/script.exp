@@ -1,5 +1,108 @@
 #!/usr/bin/expect -f
 
+#*********************************************
+#                 functions
+
+proc Multiple_Network_Devices {default_adapter} {
+  
+  set choice -1
+  set hosts -1
+
+  puts "default adapter : \[$default_adapter\]"
+
+  expect {
+    "*Multiple network devices have been detected"           {  }  
+    }
+
+  expect {
+    "*By typing the number associated with it." { }
+    }
+
+  # When all adapters are parsed the input buffer will be empty and a timeout will occur, which will # end the while loop
+  while { 1 } {  
+
+      #read adapter's id
+      expect {
+        -re {([0-9]*)\t} {}
+        timeout  { 
+                    puts "Timeout, network adapter not found" 
+                    exit 1
+                }
+      }
+      set id $expect_out(1,string)
+
+      #read adapter's name
+      expect {
+        -re {\r\n} {}
+      }
+      set adapter $expect_out(buffer)
+      # remove \r\n from the end
+      set adapter [ exec echo $adapter | tr -d '\r\n']
+      puts "id : \[$id\]  adapter name : \[$adapter\]"
+
+
+      #check if this is the default adapter
+      if {$adapter == $default_adapter} {
+        set choice $id
+        break
+      }
+  }
+
+  if {$choice > -1} {
+    puts "Selecting # $choice";
+    send -- "$choice\r"
+  }
+
+}
+
+proc Multiple_Hosts {hosts domains} {
+
+  #puts "\nmultiple hosts \[$hosts\]"
+
+  expect  "*Do you wish to have them all updated" {  send -- "n"  }
+
+  # for each available domain checks if it should be enabled for updates
+  while { $hosts > 0 } {
+                      
+      expect -exact "Do you wish to have host \["
+
+      # extract domain
+      expect {
+        -re {([a-zA-Z0-9\-]*\.)*[a-zA-Z0-9]*} { set check_domain $expect_out(0,string); puts "domain : \{$check_domain\}"}
+      }
+
+      expect -exact "\] updated?\[N\] (y/N)  "  
+
+      #checks if the check_domain is in the list with the domains that should be updated
+      set choice "n"
+      foreach domain $domains {
+
+        #puts "\[$domain\]"
+        #puts "\[$check_domain\]"
+
+        if {$domain == $check_domain} {
+          set choice "y"
+          break
+        }
+      }
+      send -- "$choice"
+
+      set hosts [expr $hosts - 1]
+  }
+
+
+
+
+}
+
+
+#*********************************************
+
+
+
+puts "***********************************"
+puts "**         Configuration         **"
+puts "***********************************"
 
 set force_conservative 1  ;# set to 1 to force conservative mode even if
 			  ;# script wasn't run conservatively originally
@@ -24,116 +127,49 @@ puts "password $password"
 puts "domains $domains"
 puts "interval $interval"
 
-
-#set scripts_dir ~/docker-workspace/no-ip/scripts
 set scripts_dir /scripts
+#set scripts_dir .
+#----------------------------------------------------------------------------------
 
-set hosts -1
-
-#exp_internal 1
-set timeout -1
-spawn noip2 -C
-match_max 100000
-
-set choice -1
-
-# TODO create variable
 # find which adapter is used to access the internet
 set default_adapter [exec $scripts_dir/get_adapter_name.sh]
 
-# TODO create variable
 # find how many adapters are available
 set adapters_cnt [exec $scripts_dir/get_adapter_number.sh]
 puts "Found $adapters_cnt adapters"
 
-#select network adapter
-if { $adapters_cnt > 1} {
-  puts "Network adapter selection"
+set timeout 10
+spawn ./noip2 -C  -c xxx
+match_max 100000
 
-# When all adapters are parsed the input buffer will be empy and a timeout will occur, which will # end the while loop
-  while { 1 } {
 
-# read adapter's number
-    expect {
-      -re {\t} {}
-       timeout  { break }
-    }
-    set id $expect_out(buffer)
-    # remove \r\n from the end
-    set id [ exec echo $id | tr -d '\r\n']
-    puts "id : $id"
-
-    expect {
-      -re {\r\n} {}
-    }
-    set adapter $expect_out(buffer)
-# remove \r\n from the end
-    set adapter [ exec echo $adapter | tr -d '\r\n']
-    puts "adapter name : $adapter"
-
-    if {$adapter == $default_adapter} {
-      set choice $id
-      break
-    }
-  }
-
-  if {$choice > -1} {
-      puts "Selecting # $choice"
-      send -- "$choice\r"
-  }
+expect {
+  "*Auto configuration for Linux client of no-ip.com." {  }
 }
 
-expect -exact "Please enter the login/email string for no-ip.com  " {puts "matched 1"; send -- "$username\r"}
+#handle multiple network adapters
+if { $adapters_cnt > 1} {
+  Multiple_Network_Devices $default_adapter
+}
+
+expect -exact "Please enter the login/email string for no-ip.com  "             { send -- "$username\r"}
 
 
 expect -exact "$username\r\nPlease enter the password for user '$username'  "   {send -- "$password\r" }
 
-#reads how many no-ip domains aravailable to be updated
-expect {
-    "* account" {send -- "$interval\r"}
-    -re {[0-9]+} { set hosts $expect_out(0,string); puts "hosts found : $hosts"}
-  }
-
 
 expect {
-   -ex "Do you wish to have them all updated?\[N\] (y/N)  " {   set choice "n"; send -- $choice}
-   -exact "$interval\r\nDo you wish to run something at successful update?\[N\] (y/N)  " { send -- "n" ; exit 0}
-}
-# for each available domain checks if it should be enabled for updates
-while { $hosts > 0 } {
-
-  expect {
-       -exact "$choice\r\nDo you wish to have host \["
-	eof  {puts "finished" ; exit 0}
- }
-
-# extract domain
-  expect {
-    -re {([a-zA-Z0-9\-]*\.)*[a-zA-Z0-9]*} { set check_domain $expect_out(0,string); puts "$check_domain"}
- }
-
-  expect {
-       -exact "\] updated?\[N\] (y/N)  "
+    "*Only one host"                         {    puts " one host"  }
+    -re {[0-9]+}                             {  
+                                                  set hosts $expect_out(0,string);
+                                                  Multiple_Hosts $hosts  $domains                                     
+                                             }
 }
 
-#checks if the check_domain is in the list with the domains that should be update
-  set choice "n"
-  foreach domain $domains {
 
-    #puts "\[$domain\]"
-    #puts "\[$check_domain\]"
 
-    if {$domain == $check_domain} {
-      set choice "y"
-      break
-    }
-  }
-  send -- "$choice"
 
-  set hosts [expr $hosts - 1]
-}
-
-expect -exact "$choice\r\nPlease enter an update interval:\[30\]  " { send -- "$interval\r" }
+expect -exact "Please enter an update interval:\[30\]  " { send -- "$interval\r" }
 
 expect {
     -exact "\r\nDo you wish to run something at successful update?\[N\] (y/N)  " { send -- "n" } 
