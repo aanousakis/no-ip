@@ -129,7 +129,7 @@ puts "interval $interval"
 
 set scripts_dir /scripts
 #set scripts_dir .
-#----------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------   -----
 
 # find which adapter is used to access the internet
 set default_adapter [exec $scripts_dir/get_adapter_name.sh]
