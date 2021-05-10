@@ -5,6 +5,7 @@
 
 A simple [Docker container](https://hub.docker.com/r/aanousakis/no-ip) for running the NO-IP dynamic DNS update. It will keep current IP address in sync with your No-IP host or domain.
 
+⚠️ Raspberry Pi users running 32 bit systems: The latest alpine update causes high cpu utilization. You can either use tag 1.0, which uses alpine:1.12 or [update libseccomp](https://github.com/alpinelinux/docker-alpine/issues/135#issuecomment-812287338)
 
 ## Usage
 
