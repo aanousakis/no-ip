@@ -1,4 +1,6 @@
-FROM alpine AS builder
+ARG ALPINE_VERSION=3.12
+
+FROM alpine:${ALPINE_VERSION} AS builder
 
 WORKDIR /src
 
@@ -8,19 +10,25 @@ RUN 	   apk update 	                                                    \
 	&& tar xzf noip-duc-linux.tar.gz                 		    \
 	&& rm noip-duc-linux.tar.gz                                         \
 	&& mv noip* noip_src                                                \
-        && git clone https://github.com/0xFireWolf/STUNExternalIP.git       \
-        && cd STUNExternalIP                                                \
-        && sed -i 's/#include <time.h>/#include <sys\/time.h>\n#include <time.h>/' STUNExternalIP.c    \
-        && make
+      && git clone https://github.com/0xFireWolf/STUNExternalIP.git       \
+      && cd STUNExternalIP                                                \
+      && sed -i 's/#include <time.h>/#include <sys\/time.h>\n#include <time.h>/' STUNExternalIP.c    \
+      && make
 
 WORKDIR noip_src
 
 RUN  make
 
-FROM alpine
+FROM alpine:${ALPINE_VERSION}
 
 RUN       apk add --no-cache expect    \
-      &&  if [ ! -d /usr/local/etc ]; then mkdir -p /usr/local/etc;fi
+      &&  if [ ! -d /usr/local/etc ]; then mkdir -p /usr/local/etc;fi \
+      &&  mkdir /config
+
+RUN addgroup noip && adduser -DH -G noip noip && chown noip /config
+
+
+USER noip
 
 WORKDIR /scripts/
 

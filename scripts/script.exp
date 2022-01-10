@@ -89,10 +89,6 @@ proc Multiple_Hosts {hosts domains} {
 
       set hosts [expr $hosts - 1]
   }
-
-
-
-
 }
 
 
@@ -139,7 +135,7 @@ set adapters_cnt [exec $scripts_dir/get_adapter_number.sh]
 puts "Found $adapters_cnt adapters"
 
 set timeout 10
-spawn noip2 -C
+spawn noip2 -C -c /config/no-ip2.conf
 match_max 100000
 
 

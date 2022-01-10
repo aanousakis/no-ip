@@ -2,8 +2,8 @@
 ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/aanousakis/no-ip/latest)
 
 # Tags
-<li><code>1.0</code></li>
-<li><code>2.0, latest</code></li>
+<li><code>3.12</code></li>
+<li><code>3.15, latest</code></li>
 
 # NO-IP Dynamic DNS Update Client
 

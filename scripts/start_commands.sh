@@ -35,14 +35,14 @@ if [ $status -ne 0 ]; then
   echo "Failed to start noip2 -C : $status"
   exit $status
 fi
-echo "First procces exited successfully"
+echo "Configuration file genereted successfully"
 
 
 # Start the second process
 # start no-ip dns update client
 echo "Starting no-ip client"
 
-noip2
+noip2 -c /config/no-ip2.conf
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start noip2: $status"
