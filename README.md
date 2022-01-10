@@ -1,5 +1,6 @@
 ![Docker Pulls](https://img.shields.io/docker/pulls/aanousakis/no-ip?style=plastic)
 ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/aanousakis/no-ip/latest)
+[![docker image size](https://img.shields.io/docker/image-size/aanousakis/no-ip/latest)](https://hub.docker.com/r/aanousakis/no-ip)
 
 # Tags
 
