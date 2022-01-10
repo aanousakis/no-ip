@@ -3,7 +3,8 @@
 
 # Tags
 
-- [latest](https://github.com/aanousakis/no-ip/blob/3.12/Dockerfile)
+- [latest](https://github.com/aanousakis/no-ip/blob/3.15/Dockerfile)
+- [3.15](https://github.com/aanousakis/no-ip/blob/3.15/Dockerfile)
 - [3.12](https://github.com/aanousakis/no-ip/blob/3.12/Dockerfile)
 
 # NO-IP Dynamic DNS Update Client
