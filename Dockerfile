@@ -27,6 +27,9 @@ RUN       apk add --no-cache expect    \
 
 RUN addgroup noip && adduser -DH -G noip noip && chown noip /config
 
+COPY --from=builder /bin/ping /bin/
+COPY --from=builder /bin/ping6 /bin/
+RUN chmod u+s /bin/ping && chmod u+s /bin/ping6
 
 USER noip
 
