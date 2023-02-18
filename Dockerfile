@@ -21,7 +21,7 @@ RUN  make
 
 FROM alpine:${ALPINE_VERSION}
 
-RUN       apk add --no-cache expect    \
+RUN       apk add --no-cache expect iputils    \
       &&  if [ ! -d /usr/local/etc ]; then mkdir -p /usr/local/etc;fi \
       &&  mkdir /config
 
